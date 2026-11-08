@@ -1,6 +1,6 @@
 # Build
 build/
-codigo/build/
+code/build/
 *.o
 *.obj
 *.exe
