@@ -1,0 +1,20 @@
+# Build
+build/
+codigo/build/
+*.o
+*.obj
+*.exe
+*.out
+compile_commands.json
+.cache/
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Sistema
+.directory
+.DS_Store
+Thumbs.db
