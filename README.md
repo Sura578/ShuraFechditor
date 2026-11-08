@@ -1,33 +1,35 @@
+**English** | [Español](README.es.md) | [Português](README.pt.md)
+
 # ShuraFechditor
 
-Editor de perfiles de color para [fastfetch](https://github.com/fastfetch-cli/fastfetch) en terminal.
+A terminal color profile editor for [fastfetch](https://github.com/fastfetch-cli/fastfetch).
 
-Permite elegir una imagen PNG y un color para cada uno de los 4 grupos de módulos de fastfetch, previsualizar el resultado en truecolor y guardar el perfil en `colores.conf`.
+It lets you choose a PNG image and one color for each of the 4 fastfetch module groups, preview the result in truecolor, and save the profile to `colores.conf`.
 
-> **Estado:** proyecto en desarrollo. La interfaz, la carga de la paleta y el preview ya funcionan. El guardado de perfiles todavía no está implementado.
+> **Status:** work in progress. The interface, palette loading, and preview already work. Profile saving is not implemented yet.
 
-## Características
+## Features
 
-- [x] Flujo interactivo por terminal
-- [x] Carga de la paleta desde `color.options.colors`
-- [x] Preview en truecolor (ANSI 24-bit)
-- [x] Validación de entradas
-- [ ] Guardado de perfiles en `colores.conf`
-- [ ] Copia/renombrado de la imagen a `logos/`
-- [ ] Verificación de consistencia entre perfiles e imágenes
-- [ ] Validación real de PNG
+- [x] Interactive terminal flow
+- [x] Palette loaded from `color.options.colors`
+- [x] Truecolor preview (ANSI 24-bit)
+- [x] Input validation
+- [ ] Save profiles to `colores.conf`
+- [ ] Copy/rename the image to `logos/`
+- [ ] Consistency check between profiles and images
+- [ ] Real PNG validation
 - [ ] Tests
-- [ ] Script de instalación
+- [ ] Install script
 
-## Requisitos
+## Requirements
 
-- Linux (probado en CachyOS/Arch)
-- Compilador con C++17 (`g++` o `clang++`)
+- Linux (tested on CachyOS/Arch)
+- C++17 compiler (`g++` or `clang++`)
 - CMake >= 3.16
-- Terminal con soporte de color truecolor
-- `fastfetch` (para usar los perfiles generados)
+- Terminal with truecolor support
+- `fastfetch` (to use the generated profiles)
 
-## Compilación
+## Build
 
 ```bash
 git clone https://github.com/Sura578/ShuraFechditor.git
@@ -37,35 +39,35 @@ cmake -S . -B build
 cmake --build build
 ```
 
-El ejecutable queda en `code/build/shurafechditor`.
+The executable is placed at `code/build/shurafechditor`.
 
-CMake copia `color.options.colors`, `colores.conf` y `config.jsonc` a la carpeta `build/` para poder ejecutar desde ahí.
+CMake copies `color.options.colors`, `colores.conf`, and `config.jsonc` into the `build/` folder so you can run it from there.
 
-## Uso
+## Usage
 
 ```bash
 cd code
 ./build/shurafechditor
 ```
 
-Flujo:
+Flow:
 
-1. Indica la ruta de una imagen `.png`.
-2. Elige un color (0-8) para cada grupo:
-   - **Grupo 1:** OS, kernel, packages, shell
-   - **Grupo 2:** WM, lm, icons, terminal
-   - **Grupo 3:** host, CPU, GPU, disk, memory, uptime, display
-   - **Grupo 4:** sound, player, media
-3. Revisa el preview.
-4. Confirma con `y` o cancela con `n`.
+1. Enter the path to a `.png` image.
+2. Choose a color (0-8) for each group:
+   - **Group 1:** OS, kernel, packages, shell
+   - **Group 2:** WM, lm, icons, terminal
+   - **Group 3:** host, CPU, GPU, disk, memory, uptime, display
+   - **Group 4:** sound, player, media
+3. Check the preview.
+4. Confirm with `y` or cancel with `n`.
 
-> ⚠️ Actualmente el paso 4 muestra "New profile documents created", pero el guardado real todavía es un stub. Está en el roadmap.
+> ⚠️ Currently step 4 prints "New profile documents created", but the actual saving is still a stub. It is on the roadmap.
 
-## Formatos de archivo
+## File formats
 
 ### `color.options.colors`
 
-Paleta disponible. Cada línea tiene el formato `índice NOMBRE #RRGGBB`.
+Available palette. Each line uses the format `index NAME #RRGGBB`.
 
 ```
 0 RED #F4A6A6
@@ -81,48 +83,48 @@ Paleta disponible. Cada línea tiene el formato `índice NOMBRE #RRGGBB`.
 
 ### `colores.conf`
 
-Un perfil por línea: número de imagen + 4 colores hexadecimales (uno por grupo).
+One profile per line: image number + 4 hexadecimal colors (one per group).
 
 ```
-# imagen | grupo1 | grupo2 | grupo3 | grupo4
+# image | group1 | group2 | group3 | group4
 1  #8dbfca  #f9a2c5  #eec2d6  #96cdd9
 ```
 
-`config.jsonc` usa `%%C1%%`, `%%C2%%`, `%%C3%%` y `%%C4%%` para asignar cada módulo a su grupo de color.
+`config.jsonc` uses `%%C1%%`, `%%C2%%`, `%%C3%%`, and `%%C4%%` to assign each module to its color group.
 
-## Estructura del proyecto
+## Project structure
 
 ```
 code/
 ├── CMakeLists.txt
 ├── main.cpp
-├── ui.h / ui.cpp              # interfaz y flujo
-├── palette.h / palette.cpp    # carga de color.options.colors
-├── profilemaker.h / .cpp      # lógica de perfiles (pendiente)
-├── color.options.colors       # paleta
-├── colores.conf               # perfiles
-└── config.jsonc               # configuración de fastfetch
+├── ui.h / ui.cpp              # interface and flow
+├── palette.h / palette.cpp    # palette loading from color.options.colors
+├── profilemaker.h / .cpp      # profile logic (pending)
+├── color.options.colors       # palette
+├── colores.conf               # profiles
+└── config.jsonc               # fastfetch configuration
 ```
 
 ## Roadmap
 
-- [x] Interfaz por terminal
-- [x] Carga de paleta y preview
-- [ ] `profilesaver()`: escribir `colores.conf` y copiar la imagen
-- [ ] `profilechecker()`: detectar perfiles e imágenes faltantes
-- [ ] `imagechecker()`: validar PNG real (firma y dimensiones)
-- [ ] Manejo de errores y casos borde
+- [x] Terminal interface
+- [x] Palette loading and preview
+- [ ] `profilesaver()`: write `colores.conf` and copy the image
+- [ ] `profilechecker()`: detect missing profiles and images
+- [ ] `imagechecker()`: real PNG validation (signature and dimensions)
+- [ ] Error handling and edge cases
 - [ ] Tests
-- [ ] Documentación de instalación
+- [ ] Installation documentation
 
-## Contribuir
+## Contributing
 
-Las issues y pull requests son bienvenidas. Si encuentras un bug, abre una issue con los pasos para reproducirlo.
+Issues and pull requests are welcome. If you find a bug, open an issue with the steps to reproduce it.
 
-## Licencia
+## License
 
-Este proyecto todavía no tiene una licencia definida.
+This project does not have a defined license yet.
 
-## Autor
+## Author
 
 - **Sura578** ([@Sura578](https://github.com/Sura578))
