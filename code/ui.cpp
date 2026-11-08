@@ -93,15 +93,14 @@ void ui::errorimage()
 //its going print the coloroptions and the option number
 void ui::coloroptions()
 {
-    std::cout<<RED     <<"Press 0 for Red \n";
-    std::cout<<ORANGE  <<"Press 1 for Orange \n";
-    std::cout<<YELLOW  <<"Press 2 for Yellow \n";
-    std::cout<<GREEN   <<"Press 3 for Green \n";
-    std::cout<<LBLUE   <<"Press 4 for LightBlue \n";
-    std::cout<<MAGENTA <<"Press 5 for Magenta \n";
-    std::cout<<ROSE    <<"Press 6 for Pink \n";
-    std::cout<<WHITE   <<"Press 7 for White \n";
-    std::cout<<BLACK<<BG_WHITE<<"Press 8 for Black \n"<<RESET;
+    for (int i = 0; i < palette.size(); ++i)
+    {
+        const ColorOption& color = palette.at(i);
+        std::cout << palette.ansi(i)
+                  << "Press " << color.index << " for "
+                  << color.name << " (" << color.hex << ")\n"
+                  << RESET;
+    }
 }
 
 void ui::profileasker()
@@ -119,7 +118,7 @@ void ui::profileasker()
         {
             std::cout << "Profile " << (group + 1)
             << " (" << categories[group]
-            << "): choose a color 0-8 \n";
+            << "): choose a color 0-" << (palette.size() - 1) << " \n";
             std::cin >> option;
             if (std::cin.fail())
             {
@@ -128,7 +127,7 @@ void ui::profileasker()
                 std::cout << "Invalid input\n";
                 continue;
             }
-            if (option >= 0 && option <= 8)
+            if (option >= 0 && option < palette.size())
             {
                 selectedColors[group] = option;
                 break;
@@ -144,28 +143,18 @@ void ui::preview()
     {
         "Os info", "Graphic info", "Hardware info", "Multimedia"
     };
-    //Same order as indice coloroptions();
-    static const char* colorNames[9] =
+
+    std::cout << "\n===== PREVIEW =====\n";
+    for (int group = 0; group < 4; group++)
     {
-        "Red", "Orange", "Yellow", "Green", "Light Blue",
-        "Magenta", "Rose", "White", "Black"
-    };
-    //Ansi code for each option
-    static const std::string colorCodes[9] =
-    {
-        RED, ORANGE, YELLOW, GREEN, LBLUE, MAGENTA, ROSE, WHITE,
-        std::string(BLACK) + BG_WHITE
-    };
-    std::cout<<"\n===== PREVIEW =====\n";
-    for(int group=0; group<4;group++)
-    {
-        int chosen=selectedColors[group];
-        std::cout<<colorCodes[chosen]
-        <<categories[group]
-        <<"["<<colorNames[chosen]<<"]sample text\n"
-        <<RESET;
+        int chosen = selectedColors[group];
+        const ColorOption& color = palette.at(chosen);
+        std::cout << palette.ansi(chosen)
+                  << categories[group]
+                  << " [" << color.name << " " << color.hex << "] sample text\n"
+                  << RESET;
     }
-    std::cout<<"==============\n";
+    std::cout << "===================\n";
 }
 
 void ui::finisher()
@@ -193,8 +182,30 @@ void ui::finisher()
     //user can close in any moment with ctrl c via terminal
 }
 
+bool ui::loadpalette()
+{
+    const char* paths[] = {
+        "color.options.colors",
+        "../color.options.colors",
+        "code/color.options.colors"
+    };
+
+    for (const char* path : paths)
+    {
+        if (palette.load(path))
+            return true;
+    }
+    return false;
+}
+
 void ui::menu()
 {
+    if (!loadpalette())
+    {
+        std::cout << "Error: could not load color.options.colors\n";
+        return;
+    }
+
     saludations();
     imagePath = lookingforimage();
     profileasker();

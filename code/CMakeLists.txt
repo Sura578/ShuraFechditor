@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(shurafechditor
     main.cpp
     ui.cpp
+    palette.cpp
     profilemaker.cpp
 )
 
