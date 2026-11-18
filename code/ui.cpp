@@ -1,41 +1,14 @@
 #include "ui.h"
 #include <iostream>
-#define BLACK   "\x1B[30m"
-#define RED     "\x1b[31m"
-#define GREEN   "\x1b[32m"
-#define YELLOW  "\x1b[33m"
-#define BLUE    "\x1b[34m"
-#define MAGENTA "\x1b[35m"
-#define CYAN    "\x1b[36m"
-#define WHITE   "\x1B[37m"
-#define ORANGE  "\x1B[38;2;255;128;0m"
-#define ROSE    "\x1B[38;2;255;151;203m"
-#define LBLUE   "\x1B[38;2;53;149;240m"
-#define LGREEN  "\x1B[38;2;17;245;120m"
-#define GRAY    "\x1B[38;2;176;174;174m"
-#define PURPLE  "\033[35m"
-#define BG_WHITE   "\x1B[47m"
-#define RESET   "\x1B[0m"
 
-// ===== STUBS TEMPORALES: borrar cuando exista ProfileMaker =====
-bool profilechecker()
-{
-    return true;
-
-}
-bool imagechecker(const std::string& path)
-{
-    return path.size() > 4 &&
-    path.substr(path.size() - 4) == ".png";
-}
-void profilesaver() {}
-// ==============================================================
+//ANSI escape code to reset the terminal color
+static const char* const RESET = "\x1B[0m";
 
 //check profile and select the profile number
 void ui::saludations()
 {
     std::cout << "Verifying profile color status\n";
-    if (!profilechecker())
+    if (!profileMaker.profilechecker())
     {
         profilestatuserror();
     }
@@ -53,21 +26,22 @@ void ui::profilestatusok()
 //else is going the select the profile number a make a new one for it
 void ui::profilestatuserror()
 {
-    // TODO: PENDING TO COMPLETE PROFILE CHECKER
-    std::cout << "Some profiles are missing or invalid.\n";
-    std::cout << "Press Enter any key to continue (Ctrl+C to fix manually)...\n";
+    if (!profileMaker.profilesToRemove().empty())
+    {
+        std::cout << "Some profiles are missing or invalid: ";
+        for (int number : profileMaker.profilesToRemove())
+            std::cout << '#' << number << ' ';
+        std::cout << "\nThey will be removed and the rest renumbered.\n";
+    }
+    else
+    {
+        std::cout << "Problems were repaired automatically (a sample profile was created if needed).\n";
+    }
+    std::cout << "Press Enter to continue (Ctrl+C to fix manually)...\n";
     std::cin.get();
-    /*
-     *    //gets amount and numbers from the profiles and images not matching from the logic;
-     *    for(counter=0;counter<amount;counter++)
-     *    {
-     *    //cout<<"Error in &profile# ";
-     *        //if(NO image) cout<<"No image n\"<<;
-     *        //cout<<"No color profile n\ Remember to read the manual on fakelink.com to see how to do it n\ Type any key to continue or type ctrl+c if you wanna solve this manually
-     *        //cin>>any key to continue;
-}
-*/
-    //if user continue lowest profile number will be replaced
+
+    // The user accepts the automatic repair.
+    profileMaker.profileresolver();
 }
 
 //is going to ask for an image
@@ -76,9 +50,9 @@ std::string ui::lookingforimage()
     std::string path;
     while (true)
     {
-        std::cout << "Please select the image you want to use (must be .png):\n";
+        std::cout << "Please select the image you want to use (valid .png):\n";
         std::getline(std::cin>>std::ws, path);
-        if (imagechecker(path))   // TODO: imagechecker ProfileMaker
+        if (profileMaker.imagechecker(path))
             return path;
         errorimage();
     }
@@ -87,7 +61,7 @@ std::string ui::lookingforimage()
 //if not its going to show an error message and ask for a new one
 void ui::errorimage()
 {
-    std::cout << "Image is not .png or the address is not correct \n Please try again \n";
+    std::cout << "Image is not a valid PNG (wrong path or signature).\n Please try again.\n";
 }
 
 //its going print the coloroptions and the option number
@@ -143,7 +117,6 @@ void ui::preview()
     {
         "Os info", "Graphic info", "Hardware info", "Multimedia"
     };
-
     std::cout << "\n===== PREVIEW =====\n";
     for (int group = 0; group < 4; group++)
     {
@@ -167,8 +140,12 @@ void ui::finisher()
         std::cin>>option;
         if (option == 'y' || option == 'Y')
         {
-            profilesaver();
-            std::cout<<"\nNew profile documents created\n";
+            profileMaker.setImagePath(imagePath);
+            profileMaker.setSelectedColors(selectedColors);
+            if (profileMaker.profilemaker())
+                std::cout << "\nNew profile documents created\n";
+            else
+                error();
             nani = true;
         }
         else if (option == 'n' || option == 'N')
@@ -180,6 +157,11 @@ void ui::finisher()
     }
     while (!nani);
     //user can close in any moment with ctrl c via terminal
+}
+
+void ui::error()
+{
+    std::cout << "Error: the profile could not be saved. The previous files were kept.\n";
 }
 
 bool ui::loadpalette()

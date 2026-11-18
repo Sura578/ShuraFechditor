@@ -6,7 +6,7 @@ A terminal color profile editor for [fastfetch](https://github.com/fastfetch-cli
 
 It lets you choose a PNG image and one color for each of the 4 fastfetch module groups, preview the result in truecolor, and save the profile to `colores.conf`.
 
-> **Status:** work in progress. The interface, palette loading, and preview already work. Profile saving is not implemented yet.
+> **Status:** working. The interface, palette loading, preview, and profile saving now work. Tests are still pending.
 
 ## Features
 
@@ -14,10 +14,10 @@ It lets you choose a PNG image and one color for each of the 4 fastfetch module 
 - [x] Palette loaded from `color.options.colors`
 - [x] Truecolor preview (ANSI 24-bit)
 - [x] Input validation
-- [ ] Save profiles to `colores.conf`
-- [ ] Copy/rename the image to `logos/`
-- [ ] Consistency check between profiles and images
-- [ ] Real PNG validation
+- [x] Save profiles to `colores.conf`
+- [x] Copy/rename the image to `logos/`
+- [x] Consistency check between profiles and images
+- [x] Real PNG validation (file signature)
 - [ ] Tests
 - [ ] Install script
 
@@ -61,7 +61,7 @@ Flow:
 3. Check the preview.
 4. Confirm with `y` or cancel with `n`.
 
-> ⚠️ Currently step 4 prints "New profile documents created", but the actual saving is still a stub. It is on the roadmap.
+> ℹ️ Step 4 writes `colores.conf`, copies the PNG into `logos/<n>.png`, and keeps a backup while writing. If the process is interrupted, the backup is restored on the next run.
 
 ## File formats
 
@@ -100,7 +100,7 @@ code/
 ├── main.cpp
 ├── ui.h / ui.cpp              # interface and flow
 ├── palette.h / palette.cpp    # palette loading from color.options.colors
-├── profilemaker.h / .cpp      # profile logic (pending)
+├── profilemaker.h / .cpp      # profile creation, validation and recovery
 ├── color.options.colors       # palette
 ├── colores.conf               # profiles
 └── config.jsonc               # fastfetch configuration
@@ -110,10 +110,10 @@ code/
 
 - [x] Terminal interface
 - [x] Palette loading and preview
-- [ ] `profilesaver()`: write `colores.conf` and copy the image
-- [ ] `profilechecker()`: detect missing profiles and images
-- [ ] `imagechecker()`: real PNG validation (signature and dimensions)
-- [ ] Error handling and edge cases
+- [x] `profilemaker()`: write `colores.conf` and copy the image
+- [x] `profilechecker()`: detect missing profiles and images
+- [x] `imagechecker()`: real PNG signature validation
+- [x] Error handling, backup and recovery
 - [ ] Tests
 - [ ] Installation documentation
 

@@ -6,7 +6,7 @@ Editor de perfiles de color para [fastfetch](https://github.com/fastfetch-cli/fa
 
 Permite elegir una imagen PNG y un color para cada uno de los 4 grupos de módulos de fastfetch, previsualizar el resultado en truecolor y guardar el perfil en `colores.conf`.
 
-> **Estado:** proyecto en desarrollo. La interfaz, la carga de la paleta y el preview ya funcionan. El guardado de perfiles todavía no está implementado.
+> **Estado:** funcional. La interfaz, la paleta, el preview y el guardado de perfiles ya funcionan. Faltan tests.
 
 ## Características
 
@@ -14,10 +14,10 @@ Permite elegir una imagen PNG y un color para cada uno de los 4 grupos de módul
 - [x] Carga de la paleta desde `color.options.colors`
 - [x] Preview en truecolor (ANSI 24-bit)
 - [x] Validación de entradas
-- [ ] Guardado de perfiles en `colores.conf`
-- [ ] Copia/renombrado de la imagen a `logos/`
-- [ ] Verificación de consistencia entre perfiles e imágenes
-- [ ] Validación real de PNG
+- [x] Guardado de perfiles en `colores.conf`
+- [x] Copia/renombrado de la imagen a `logos/`
+- [x] Verificación de consistencia entre perfiles e imágenes
+- [x] Validación real de PNG (firma)
 - [ ] Tests
 - [ ] Script de instalación
 
@@ -61,7 +61,7 @@ Flujo:
 3. Revisa el preview.
 4. Confirma con `y` o cancela con `n`.
 
-> ⚠️ Actualmente el paso 4 muestra "New profile documents created", pero el guardado real todavía es un stub. Está en el roadmap.
+> ℹ️ El paso 4 escribe `colores.conf`, copia el PNG en `logos/<n>.png` y mantiene una copia de seguridad mientras escribe. Si el proceso se interrumpe, la copia se restaura en el próximo inicio.
 
 ## Formatos de archivo
 
@@ -100,7 +100,7 @@ code/
 ├── main.cpp
 ├── ui.h / ui.cpp              # interfaz y flujo
 ├── palette.h / palette.cpp    # carga de color.options.colors
-├── profilemaker.h / .cpp      # lógica de perfiles (pendiente)
+├── profilemaker.h / .cpp      # creación, validación y recuperación de perfiles
 ├── color.options.colors       # paleta
 ├── colores.conf               # perfiles
 └── config.jsonc               # configuración de fastfetch
@@ -110,10 +110,10 @@ code/
 
 - [x] Interfaz por terminal
 - [x] Carga de paleta y preview
-- [ ] `profilesaver()`: escribir `colores.conf` y copiar la imagen
-- [ ] `profilechecker()`: detectar perfiles e imágenes faltantes
-- [ ] `imagechecker()`: validar PNG real (firma y dimensiones)
-- [ ] Manejo de errores y casos borde
+- [x] `profilemaker()`: escribir `colores.conf` y copiar la imagen
+- [x] `profilechecker()`: detectar perfiles e imágenes faltantes
+- [x] `imagechecker()`: validar firma real de PNG
+- [x] Manejo de errores, copia de seguridad y recuperación
 - [ ] Tests
 - [ ] Documentación de instalación
 

@@ -2,6 +2,7 @@
 #define UI_H
 #include <string>
 #include "palette.h"
+#include "profilemaker.h"
 class ui
 {
 public:
@@ -17,7 +18,9 @@ private:
     void profileasker();
     void finisher();
     void preview();
+    void error();
     Palette palette;
+    maker profileMaker;
     std::string imagePath;
     //imageselected are the different color options saved as vector
     int selectedColors[4] = {0, 0, 0, 0};

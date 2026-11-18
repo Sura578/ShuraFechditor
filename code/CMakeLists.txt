@@ -12,14 +12,11 @@ add_executable(shurafechditor
     palette.cpp
     profilemaker.cpp
 )
-
 target_include_directories(shurafechditor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(shurafechditor PRIVATE -Wall -Wextra -Wpedantic)
 endif()
-
-# Copia los archivos de datos junto al ejecutable para poder probarlo
+#Copy data file with the bin.
 foreach(data_file colores.conf color.options.colors config.jsonc)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${data_file}")
         configure_file(
@@ -29,3 +26,17 @@ foreach(data_file colores.conf color.options.colors config.jsonc)
         )
     endif()
 endforeach()
+
+#Copy profile images next to the binary so profilechecker can validate them.
+file(GLOB profile_images CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/logos/*.png")
+if(profile_images)
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/logos")
+    foreach(image_file ${profile_images})
+        get_filename_component(image_name "${image_file}" NAME)
+        configure_file(
+            "${image_file}"
+            "${CMAKE_CURRENT_BINARY_DIR}/logos/${image_name}"
+            COPYONLY
+        )
+    endforeach()
+endif()

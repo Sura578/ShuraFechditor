@@ -6,7 +6,7 @@ Editor de perfis de cor para o [fastfetch](https://github.com/fastfetch-cli/fast
 
 Permite escolher uma imagem PNG e uma cor para cada um dos 4 grupos de módulos do fastfetch, visualizar o resultado em truecolor e salvar o perfil em `colores.conf`.
 
-> **Status:** projeto em desenvolvimento. A interface, o carregamento da paleta e a pré-visualização já funcionam. O salvamento de perfis ainda não está implementado.
+> **Status:** funcional. A interface, a paleta, a pré-visualização e o salvamento de perfis já funcionam. Faltam testes.
 
 ## Recursos
 
@@ -14,10 +14,10 @@ Permite escolher uma imagem PNG e uma cor para cada um dos 4 grupos de módulos 
 - [x] Carregamento da paleta a partir de `color.options.colors`
 - [x] Pré-visualização em truecolor (ANSI 24-bit)
 - [x] Validação de entradas
-- [ ] Salvamento de perfis em `colores.conf`
-- [ ] Cópia/renomeação da imagem para `logos/`
-- [ ] Verificação de consistência entre perfis e imagens
-- [ ] Validação real de PNG
+- [x] Salvamento de perfis em `colores.conf`
+- [x] Cópia/renomeação da imagem para `logos/`
+- [x] Verificação de consistência entre perfis e imagens
+- [x] Validação real de PNG (assinatura)
 - [ ] Testes
 - [ ] Script de instalação
 
@@ -61,7 +61,7 @@ Fluxo:
 3. Confira a pré-visualização.
 4. Confirme com `y` ou cancele com `n`.
 
-> ⚠️ Atualmente o passo 4 mostra "New profile documents created", mas o salvamento real ainda é um stub. Está no roadmap.
+> ℹ️ O passo 4 escreve `colores.conf`, copia o PNG para `logos/<n>.png` e mantém um backup durante a escrita. Se o processo for interrompido, o backup é restaurado na próxima execução.
 
 ## Formatos de arquivo
 
@@ -100,7 +100,7 @@ code/
 ├── main.cpp
 ├── ui.h / ui.cpp              # interface e fluxo
 ├── palette.h / palette.cpp    # carregamento de color.options.colors
-├── profilemaker.h / .cpp      # lógica de perfis (pendente)
+├── profilemaker.h / .cpp      # criação, validação e recuperação de perfis
 ├── color.options.colors       # paleta
 ├── colores.conf               # perfis
 └── config.jsonc               # configuração do fastfetch
@@ -110,10 +110,10 @@ code/
 
 - [x] Interface pelo terminal
 - [x] Carregamento da paleta e pré-visualização
-- [ ] `profilesaver()`: escrever `colores.conf` e copiar a imagem
-- [ ] `profilechecker()`: detectar perfis e imagens ausentes
-- [ ] `imagechecker()`: validar PNG real (assinatura e dimensões)
-- [ ] Tratamento de erros e casos limite
+- [x] `profilemaker()`: escrever `colores.conf` e copiar a imagem
+- [x] `profilechecker()`: detectar perfis e imagens ausentes
+- [x] `imagechecker()`: validar assinatura real de PNG
+- [x] Tratamento de erros, backup e recuperação
 - [ ] Testes
 - [ ] Documentação de instalação
 

@@ -14,6 +14,10 @@ compile_commands.json
 *.swp
 *~
 
+# Datos generados localmente
+code/logos/
+backup_*/
+
 # Sistema
 .directory
 .DS_Store
